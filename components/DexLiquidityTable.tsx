@@ -157,7 +157,9 @@ export function DexLiquidityTable({ pairs, isLoading, tokenSymbol = "cbX", price
 
                     <td style={{ padding: "12px 16px", textAlign: "right" }}>
                       <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
-                        {tokenSymbol}/{pair.quoteToken.symbol}
+                        {pair.isTokenBase
+                          ? `${tokenSymbol}/${pair.counterToken.symbol}`
+                          : `${pair.counterToken.symbol}/${tokenSymbol}`}
                       </span>
                     </td>
 

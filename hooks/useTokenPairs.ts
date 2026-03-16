@@ -6,10 +6,11 @@ export interface DexPair {
   dexId: string
   dexLabel: string
   pairAddress: string
-  quoteToken: { symbol: string; address: string }
+  counterToken: { symbol: string; address: string }  // the token that is NOT our tracked token
+  isTokenBase: boolean                               // true if our token is the base side
   priceUsd: number
   liquidityUsd: number
-  liquidityBase: number   // raw base token amount in pool
+  liquidityBase: number
   volume24h: number
   priceChange24h: number
   buys24h: number
@@ -86,11 +87,14 @@ export function useTokenPairs(tokenAddress: string, chainId = "base") {
             ? (p.liquidity?.base ?? 0)
             : (p.liquidity?.quote ?? 0)
 
+          const counter = isBase ? p.quoteToken : p.baseToken
+
           return {
           dexId: p.dexId,
           dexLabel: DEX_LABELS[p.dexId] ?? p.dexId,
           pairAddress: p.pairAddress,
-          quoteToken: { symbol: p.quoteToken.symbol, address: p.quoteToken.address },
+          counterToken: { symbol: counter.symbol, address: counter.address },
+          isTokenBase: isBase,
           priceUsd: parseFloat(p.priceUsd ?? "0"),
           liquidityUsd: p.liquidity?.usd ?? 0,
           liquidityBase: tokenAmount,
