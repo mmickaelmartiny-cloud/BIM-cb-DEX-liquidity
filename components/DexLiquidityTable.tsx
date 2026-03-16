@@ -186,8 +186,8 @@ export function DexLiquidityTable({ pairs, isLoading, tokenSymbol = "cbX", price
                     </td>
 
                     <td style={{ padding: "12px 16px", textAlign: "right" }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: liquidityColor(pair.liquidityUsd) }}>
-                        {fmtUsd(pair.liquidityUsd)}
+                      <span style={{ fontSize: 13, fontWeight: 700, color: liquidityColor(pair.liquidityBase * pair.priceUsd) }}>
+                        {fmtUsd(pair.liquidityBase * pair.priceUsd)}
                       </span>
                     </td>
 

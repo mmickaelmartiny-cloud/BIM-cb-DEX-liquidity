@@ -9,6 +9,7 @@ export interface DexPair {
   quoteToken: { symbol: string; address: string }
   priceUsd: number
   liquidityUsd: number
+  liquidityBase: number   // raw base token amount in pool
   volume24h: number
   priceChange24h: number
   buys24h: number
@@ -52,7 +53,7 @@ interface DexScreenerResponse {
     baseToken: { address: string; symbol: string; name: string }
     quoteToken: { address: string; symbol: string; name: string }
     priceUsd?: string
-    liquidity?: { usd?: number }
+    liquidity?: { usd?: number; base?: number }
     volume?: { h24?: number }
     priceChange?: { h24?: number }
     txns?: { h24?: { buys?: number; sells?: number } }
@@ -83,6 +84,7 @@ export function useTokenPairs(tokenAddress: string, chainId = "base") {
           quoteToken: { symbol: p.quoteToken.symbol, address: p.quoteToken.address },
           priceUsd: parseFloat(p.priceUsd ?? "0"),
           liquidityUsd: p.liquidity?.usd ?? 0,
+          liquidityBase: p.liquidity?.base ?? 0,
           volume24h: p.volume?.h24 ?? 0,
           priceChange24h: p.priceChange?.h24 ?? 0,
           buys24h: p.txns?.h24?.buys ?? 0,

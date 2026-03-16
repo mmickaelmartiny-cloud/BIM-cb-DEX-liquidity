@@ -20,17 +20,24 @@ function fmtUsd(n: number) {
 }
 
 function TokenPanel({ token }: { token: typeof TOKENS[0] }) {
-  const { pairs, totalLiquidity, totalVolume24h, isLoading, error, lastUpdated, refresh } =
+  const { pairs, totalVolume24h, isLoading, error, lastUpdated, refresh } =
     useTokenPairs(token.address)
-
-  const avgPrice = pairs.length > 0
-    ? pairs.reduce((sum, p) => sum + p.priceUsd * p.liquidityUsd, 0) / Math.max(totalLiquidity, 1)
-    : 0
 
   const pricePrecision = ["cbBTC", "cbETH", "cbLTC"].includes(token.symbol) ? 2 : 6
 
+  // Only use pairs with known price
+  const knownPairs = pairs.filter(p => p.priceUsd > 0)
+
+  // Liquidity = base token side only (liquidityBase * priceUsd)
+  const totalBaseUsd = knownPairs.reduce((s, p) => s + p.liquidityBase * p.priceUsd, 0)
+
+  // Weighted avg price by base-side liquidity
+  const avgPrice = totalBaseUsd > 0
+    ? knownPairs.reduce((s, p) => s + p.priceUsd * (p.liquidityBase * p.priceUsd), 0) / totalBaseUsd
+    : 0
+
   const stats = [
-    { label: "Liquidité totale", value: isLoading ? "…" : fmtUsd(totalLiquidity) },
+    { label: "Liquidité totale", value: isLoading ? "…" : fmtUsd(totalBaseUsd) },
     { label: "Volume 24h", value: isLoading ? "…" : fmtUsd(totalVolume24h) },
     { label: "Prix moyen pondéré", value: isLoading ? "…" : avgPrice > 0 ? `$${avgPrice.toFixed(pricePrecision)}` : "—" },
   ]
