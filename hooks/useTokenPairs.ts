@@ -54,6 +54,7 @@ interface DexScreenerResponse {
     baseToken: { address: string; symbol: string; name: string }
     quoteToken: { address: string; symbol: string; name: string }
     priceUsd?: string
+    priceNative?: string
     liquidity?: { usd?: number; base?: number; quote?: number }
     volume?: { h24?: number }
     priceChange?: { h24?: number }
@@ -89,13 +90,21 @@ export function useTokenPairs(tokenAddress: string, chainId = "base") {
 
           const counter = isBase ? p.quoteToken : p.baseToken
 
+          // When our token is the quote side, derive its price:
+          // priceNative = price of base in quote units → our price = baseUsd / priceNative
+          const basePriceUsd = parseFloat(p.priceUsd ?? "0")
+          const priceNative = parseFloat(p.priceNative ?? "0")
+          const tokenPriceUsd = isBase
+            ? basePriceUsd
+            : (priceNative > 0 ? basePriceUsd / priceNative : 0)
+
           return {
           dexId: p.dexId,
           dexLabel: DEX_LABELS[p.dexId] ?? p.dexId,
           pairAddress: p.pairAddress,
           counterToken: { symbol: counter.symbol, address: counter.address },
           isTokenBase: isBase,
-          priceUsd: parseFloat(p.priceUsd ?? "0"),
+          priceUsd: tokenPriceUsd,
           liquidityUsd: p.liquidity?.usd ?? 0,
           liquidityBase: tokenAmount,
           volume24h: p.volume?.h24 ?? 0,
