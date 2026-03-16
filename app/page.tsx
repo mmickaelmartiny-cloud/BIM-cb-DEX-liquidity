@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { useTokenPairs } from "@/hooks/useTokenPairs"
 import { DexLiquidityTable } from "@/components/DexLiquidityTable"
 
@@ -142,13 +143,24 @@ export default function HomePage() {
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px" }}>
       {/* Header */}
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text)", marginBottom: 4 }}>
-          Coinbase Wrapped Assets — Liquidité DEX
-        </h1>
-        <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
-          Base Mainnet · Données DexScreener
-        </p>
+      <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 32 }}>
+        <Image
+          src="/bim-logo.png"
+          alt="BIM Exchange"
+          width={140}
+          height={36}
+          priority
+          style={{ objectFit: "contain" }}
+        />
+        <div style={{ width: "1px", height: 32, background: "var(--border)" }} />
+        <div>
+          <h1 style={{ fontSize: 18, fontWeight: 700, color: "var(--text)", marginBottom: 2 }}>
+            Coinbase Wrapped Assets — Liquidité DEX
+          </h1>
+          <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
+            Base Mainnet · Données DexScreener
+          </p>
+        </div>
       </div>
 
       {/* Tabs */}
