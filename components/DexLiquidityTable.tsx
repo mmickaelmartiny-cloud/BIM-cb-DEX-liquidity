@@ -22,9 +22,10 @@ function liquidityColor(usd: number) {
 interface Props {
   pairs: DexPair[]
   isLoading: boolean
+  tokenSymbol?: string
 }
 
-export function DexLiquidityTable({ pairs, isLoading }: Props) {
+export function DexLiquidityTable({ pairs, isLoading, tokenSymbol = "cbX" }: Props) {
   if (isLoading) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -107,7 +108,7 @@ export function DexLiquidityTable({ pairs, isLoading }: Props) {
 
                 <td style={{ padding: "12px 16px", textAlign: "right" }}>
                   <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
-                    cbDOGE/{pair.quoteToken.symbol}
+                    {tokenSymbol}/{pair.quoteToken.symbol}
                   </span>
                 </td>
 
