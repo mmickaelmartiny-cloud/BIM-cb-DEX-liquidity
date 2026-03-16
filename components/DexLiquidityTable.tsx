@@ -23,9 +23,10 @@ interface Props {
   pairs: DexPair[]
   isLoading: boolean
   tokenSymbol?: string
+  pricePrecision?: number
 }
 
-export function DexLiquidityTable({ pairs, isLoading, tokenSymbol = "cbX" }: Props) {
+export function DexLiquidityTable({ pairs, isLoading, tokenSymbol = "cbX", pricePrecision = 6 }: Props) {
   if (isLoading) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -114,7 +115,7 @@ export function DexLiquidityTable({ pairs, isLoading, tokenSymbol = "cbX" }: Pro
 
                 <td style={{ padding: "12px 16px", textAlign: "right" }}>
                   <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>
-                    {pair.priceUsd > 0 ? `$${pair.priceUsd.toFixed(6)}` : "—"}
+                    {pair.priceUsd > 0 ? `$${pair.priceUsd.toFixed(pricePrecision)}` : "—"}
                   </span>
                 </td>
 

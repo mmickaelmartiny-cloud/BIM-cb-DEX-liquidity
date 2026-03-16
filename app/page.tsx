@@ -27,7 +27,7 @@ function TokenPanel({ token }: { token: typeof TOKENS[0] }) {
     ? pairs.reduce((sum, p) => sum + p.priceUsd * p.liquidityUsd, 0) / Math.max(totalLiquidity, 1)
     : 0
 
-  const pricePrecision = token.symbol === "cbBTC" ? 2 : token.symbol === "cbETH" ? 2 : 6
+  const pricePrecision = ["cbBTC", "cbETH", "cbLTC"].includes(token.symbol) ? 2 : 6
 
   const stats = [
     { label: "Liquidité totale", value: isLoading ? "…" : fmtUsd(totalLiquidity) },
@@ -123,7 +123,7 @@ function TokenPanel({ token }: { token: typeof TOKENS[0] }) {
           {pairs.length} paire{pairs.length !== 1 ? "s" : ""} · refresh auto 30s
         </span>
       </div>
-      <DexLiquidityTable pairs={pairs} isLoading={isLoading} tokenSymbol={token.symbol} />
+      <DexLiquidityTable pairs={pairs} isLoading={isLoading} tokenSymbol={token.symbol} pricePrecision={pricePrecision} />
     </div>
   )
 }
