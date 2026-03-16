@@ -75,7 +75,8 @@ export function DexLiquidityTable({ pairs, isLoading, tokenSymbol = "cbX", price
   const isOutlier = (p: DexPair) =>
     avgPrice > 0 && p.priceUsd > 0 && Math.abs(p.priceUsd - avgPrice) / avgPrice > 0.05
 
-  const displayed = showOutliers ? pairs : pairs.filter(p => !isOutlier(p))
+  const knownPrice = pairs.filter(p => p.priceUsd > 0)
+  const displayed = showOutliers ? knownPrice : knownPrice.filter(p => !isOutlier(p))
   const hiddenCount = pairs.length - displayed.length
 
   const cols = ["DEX", "Paire", "Prix", "Δ vs moy.", "Liquidité", "Volume 24h", "Δ 24h", "Txns 24h", ""]
