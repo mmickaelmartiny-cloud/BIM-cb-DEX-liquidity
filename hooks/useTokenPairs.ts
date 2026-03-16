@@ -53,7 +53,7 @@ interface DexScreenerResponse {
     baseToken: { address: string; symbol: string; name: string }
     quoteToken: { address: string; symbol: string; name: string }
     priceUsd?: string
-    liquidity?: { usd?: number; base?: number }
+    liquidity?: { usd?: number; base?: number; quote?: number }
     volume?: { h24?: number }
     priceChange?: { h24?: number }
     txns?: { h24?: { buys?: number; sells?: number } }
@@ -75,22 +75,31 @@ export function useTokenPairs(tokenAddress: string, chainId = "base") {
       if (!res.ok) throw new Error(`DexScreener error: ${res.status}`)
       const json: DexScreenerResponse = await res.json()
 
+      const addrLower = tokenAddress.toLowerCase()
+
       const filtered = (json.pairs ?? [])
         .filter(p => p.chainId === chainId && MAJOR_DEXES.has(p.dexId))
-        .map(p => ({
+        .map(p => {
+          // Determine if our token is the base or quote side
+          const isBase = p.baseToken.address.toLowerCase() === addrLower
+          const tokenAmount = isBase
+            ? (p.liquidity?.base ?? 0)
+            : (p.liquidity?.quote ?? 0)
+
+          return {
           dexId: p.dexId,
           dexLabel: DEX_LABELS[p.dexId] ?? p.dexId,
           pairAddress: p.pairAddress,
           quoteToken: { symbol: p.quoteToken.symbol, address: p.quoteToken.address },
           priceUsd: parseFloat(p.priceUsd ?? "0"),
           liquidityUsd: p.liquidity?.usd ?? 0,
-          liquidityBase: p.liquidity?.base ?? 0,
+          liquidityBase: tokenAmount,
           volume24h: p.volume?.h24 ?? 0,
           priceChange24h: p.priceChange?.h24 ?? 0,
           buys24h: p.txns?.h24?.buys ?? 0,
           sells24h: p.txns?.h24?.sells ?? 0,
           url: p.url,
-        }))
+        }})
         .sort((a, b) => b.liquidityUsd - a.liquidityUsd)
 
       setPairs(filtered)
